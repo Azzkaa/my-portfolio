@@ -1,26 +1,155 @@
 @import "tailwindcss";
 
+/* ========= Base Teal/Cyan Theme =========
+   Dark is the default. Light is softer and easier on the eyes.
+   Use [data-theme="light" | "dark"] on <html> to override.
+*/
+
+/* System-aware defaults */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Dark (default) */
+  --bg: #0b1220;            /* deep navy */
+  --panel: #131b2e;         /* softer navy */
+  --text: #e8f3f7;          /* soft off-white */
+  --muted: #96a9b8;         /* muted blue-gray */
+
+  --brand: #2dd4bf;         /* teal 400 */
+  --brand-600: #14b8a6;     /* teal 600 */
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: light) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --bg: #f5f9fa;          /* soft cool gray */
+    --panel: #ffffff;       /* clean panel white */
+    --text: #1a1f2b;        /* dark navy text */
+    --muted: #64748b;       /* slate gray */
+
+    --brand: #14b8a6;       /* teal 500 */
+    --brand-600: #0d9488;   /* teal 600 (darker accent) */
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Manual overrides via data-theme */
+:root,
+[data-theme="dark"] {
+  --bg: #0b1220;
+  --panel: #131b2e;
+  --text: #e8f3f7;
+  --muted: #96a9b8;
+  --brand: #2dd4bf;
+  --brand-600: #14b8a6;
 }
+
+[data-theme="light"] {
+  --bg: #f5f9fa;
+  --panel: #ffffff;
+  --text: #1a1f2b;
+  --muted: #64748b;
+  --brand: #14b8a6;
+  --brand-600: #0d9488;
+}
+
+/* ===== Global resets / helpers ===== */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Links inherit theme color; subtle hover */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+a:hover {
+  color: var(--brand);
+}
+
+/* Optional: nicer text selection */
+::selection {
+  background: var(--brand-600);
+  color: #ffffff;
+}
+
+/* Optional: thin scrollbar that matches theme (Chromium/WebKit) */
+* {
+  scrollbar-width: thin;                 /* Firefox */
+  scrollbar-color: var(--brand-600) transparent;
+}
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--brand-600) 60%, transparent);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ReactTyped caret styling */
+.typed-cursor {
+  color: var(--brand);
+  font-weight: 400;
+  opacity: 0.8;
+}
+
+/* --- Start overlay FX --- */
+.start-scanlines {
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.03) 0px,
+    rgba(255,255,255,0.03) 1px,
+    transparent 2px,
+    transparent 4px
+  );
+  animation: startScan 12s linear infinite;
+}
+@keyframes startScan {
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(4px); }
+}
+
+.start-vignette {
+  box-shadow: inset 0 0 120px rgba(0,0,0,0.55);
+}
+
+.start-caret {
+  display: inline-block;
+  width: 6px;
+  height: 16px;
+  background: currentColor;
+  margin-left: 2px;
+  animation: caretBlink 1s step-end infinite;
+}
+@keyframes caretBlink {
+  50% { opacity: 0; }
+}
+/* Filled button hover background (dark vs light) */
+:root {
+  /* dark: a soft charcoal taken from panel/text */
+  --btn-filled-hover: color-mix(in oklab, var(--panel) 80%, var(--text) 20%);
+}
+[data-theme="light"] {
+  /* light: gentle light gray */
+  --btn-filled-hover: color-mix(in oklab, #fff 90%, #000 10%);
+}
+
+
+
+/* Hide the default cursor on desktop; keep it on touch devices for usability */
+@media (pointer: fine) {
+  html, body {
+    cursor: none;
+  }
+  a, button {
+    cursor: none;
+  }
+}
+
