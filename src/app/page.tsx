@@ -161,6 +161,9 @@ export default function Home() {
     "Python", "R", "MATLAB", "JIRA",
   ];
 
+  // Add state for mobile menu
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   // Simple brand icon set (inline SVG). Unknown names get a generic icon.
   const SkillIcon: React.FC<{ name: string; className?: string }> = ({ name, className }) => {
     const n = name.toLowerCase();
@@ -298,6 +301,13 @@ export default function Home() {
       image: "/projects/penguins.png",
       link: "https://github.com/Azzkaa/Penguin-Species-Clustering-and-Analysis-System",
     },
+    {
+      title: "Handwritten Digit Recognition",
+      desc: "ML pipeline for digit classification.",
+      tech: ["Python", "ML"],
+      image: "/projects/hands.png",
+      link: "https://github.com/Azzkaa/Handwritten-Digit-Recognition-System",
+    },
 
     {
       title: "SP Course Assignment Tracking System",
@@ -318,15 +328,8 @@ export default function Home() {
       title: "Property App Backend",
       desc: "REST APIs and services for a property app.",
       tech: ["Node", "Express", "DB"],
-      image: "/projects/property-api.png",
+      image: "/backend.png",
       link: "https://github.com/saislamb97/highball-property-backend",
-    },
-    {
-      title: "Handwritten Digit Recognition",
-      desc: "ML pipeline for digit classification.",
-      tech: ["Python", "ML"],
-      image: "/projects/hands.png",
-      link: "https://github.com/Azzkaa/Handwritten-Digit-Recognition-System",
     },
   ];
 
@@ -460,16 +463,61 @@ export default function Home() {
             </div>
           </div>
 
+          {/* Mobile menu button */}
           <button
             className="sm:hidden p-2 rounded-xl border text-[var(--text)]/80"
             style={{
               borderColor:
                 "color-mix(in oklab, var(--brand-600) 40%, transparent)",
             }}
+            onClick={() => setMobileMenuOpen((v) => !v)}
+            aria-label="Open menu"
           >
             <Menu size={18} />
           </button>
         </div>
+
+        {/* Mobile menu dropdown */}
+        {mobileMenuOpen && (
+          <div className="sm:hidden absolute top-14 left-0 w-full bg-[var(--panel)] border-t border-[color:var(--brand-600)]/20 shadow-lg z-50 animate-fade-in">
+            <div className="flex flex-col items-center gap-2 py-4">
+              {[
+                ["#about", "About"],
+                ["#projects", "Projects"],
+                ["#experience", "Experience"],
+                ["#contact", "Contact"],
+              ].map(([href, label]) => (
+                <a
+                  key={label}
+                  href={href}
+                  className="w-full text-center px-4 py-2 text-[var(--text)]/80 hover:text-[var(--brand)] transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {label}
+                </a>
+              ))}
+              {/* Theme toggle */}
+              <button
+                onClick={() => {
+                  toggleTheme();
+                  setMobileMenuOpen(false);
+                }}
+                aria-label="Toggle theme"
+                className="mt-2 p-2 rounded-xl border text-[var(--text)]/80 hover:text-[var(--brand)] transition-colors"
+                style={{
+                  borderColor:
+                    "color-mix(in oklab, var(--brand-600) 40%, transparent)",
+                  background:
+                    "color-mix(in oklab, var(--brand-600) 6%, transparent)",
+                }}
+              >
+                {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+              </button>
+            </div>
+          </div>
+        )}
+
+
       </motion.nav>
 
       {/* HERO */}
@@ -1042,7 +1090,7 @@ export default function Home() {
 
             {/* LinkedIn */}
             <motion.a
-              href="https://www.linkedin.com/in/azka-aftab-19b1a1249/"
+              href="https://www.linkedin.com/in/azka-aftab-59b027376/"
               target="_blank"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
