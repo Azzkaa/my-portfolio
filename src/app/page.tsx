@@ -1041,7 +1041,7 @@ export default function Home() {
       </section>
 
       {/* CONTACT — icons only */}
-      <section id="contact" className="py-20">
+      <section id="contact" className="py-20 relative z-50">
         <div className="mx-auto max-w-6xl px-4">
           <motion.h2
             initial={{ opacity: 0, y: 10 }}
