@@ -606,7 +606,7 @@ export default function Home() {
             <span className="px-2 py-0.5 rounded-md bg-[color:rgba(34,211,238,0.12)] text-[var(--brand)]">
               software
             </span>
-            once in a while. I care about making things that feel fast, accessible, and enjoyable—turning ideas into experiences people actually like to use.
+            once in a while. I care about making things that feel fast, accessible, and enjoyable—turning ideas into experiences people actually like to use :p
           </motion.p>
 
           {/* Content grid (text + photo) */}
