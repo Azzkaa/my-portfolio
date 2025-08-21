@@ -144,15 +144,141 @@ export default function Home() {
     },
   };
 
+  // --- Work (Projects/Skills) state ---
+const [workTab, setWorkTab] = useState<"projects" | "skills">("projects");
+const [showAllProjects, setShowAllProjects] = useState(false);
+
+// --- Skills you listed (deduped) ---
+const skills: string[] = [
+  // Frontend
+  "React", "Next.js", "JavaScript", "TypeScript", "Vue.js", "HTML", "CSS", "Bootstrap",
+  // Backend / Platforms
+  "Node.js", "Java (Spring Boot)", "Python (Django)", "FastAPI", "PHP", "C++",
+  // DB
+  "MySQL", "PostgreSQL", "Oracle SQL", "SQLite", "Firebase",
+  // Mobile
+  "Flutter", "Dart",
+  // ML / Data / Tools
+  "Python", "R", "MATLAB", "JIRA",
+];
+
+// Simple brand icon set (inline SVG). Unknown names get a generic icon.
+const SkillIcon: React.FC<{ name: string; className?: string }> = ({ name, className }) => {
+  const n = name.toLowerCase();
+
+  // helper
+  const svg = (d: React.ReactNode) => (
+    <svg viewBox="0 0 48 48" className={className ?? "h-10 w-10"} fill="none" stroke="currentColor" strokeWidth="2">
+      {d}
+    </svg>
+  );
+
+  if (n.includes("react")) {
+    return svg(
+      <>
+        <circle cx="24" cy="24" r="3" fill="currentColor" />
+        <ellipse cx="24" cy="24" rx="18" ry="7" />
+        <ellipse cx="24" cy="24" rx="18" ry="7" transform="rotate(60 24 24)" />
+        <ellipse cx="24" cy="24" rx="18" ry="7" transform="rotate(120 24 24)" />
+      </>
+    );
+  }
+  if (n.includes("next")) {
+    return svg(
+      <>
+        <circle cx="24" cy="24" r="19" />
+        <path d="M17 16h7m-7 8h10M28 16l10 16" />
+      </>
+    );
+  }
+  if (n.includes("typescript")) {
+    return svg(<rect x="9" y="12" width="30" height="24" rx="3" className="fill-current" />);
+  }
+  if (n.includes("node")) {
+    return svg(<path d="M24 6l14 8v20l-14 8-14-8V14l14-8Z" />);
+  }
+  if (n.includes("java") && !n.includes("javascript")) {
+    return svg(<path d="M24 10c6 6-8 8 0 14-10 3 8 5-6 9m-5 5h22M14 33c3 2 17 2 20 0" />);
+  }
+  if (n === "python" || n.includes("python (django)")) {
+    return svg(<path d="M30 10h-8a6 6 0 0 0-6 6v4h10m-8 18h8a6 6 0 0 0 6-6v-4H22" />);
+  }
+  if (n.includes("django")) {
+    return svg(<path d="M16 36V12h8a6 6 0 0 1 0 12h-6M32 36V24" />);
+  }
+  if (n.includes("spring")) {
+    return svg(<path d="M10 28c4 10 24 12 28-3-2-9-12-13-18-8l-6 11Z" />);
+  }
+  if (n.includes("fastapi")) {
+    return svg(<path d="M24 6l12 21H12L24 6Zm0 36v-7" />);
+  }
+  if (n.includes("java") && n.includes("script")) {
+    return svg(<path d="M10 10h28v28H10zM18 18v12m12-8v8" />);
+  }
+  if (n.includes("vue")) {
+    return svg(<path d="M6 10h12l6 10 6-10h12L24 42 6 10Z" />);
+  }
+  if (n === "html") {
+    return svg(<path d="M10 6h28l-3 30-11 4-11-4-3-30Z" />);
+  }
+  if (n === "css") {
+    return svg(<path d="M10 6h28l-3 30-11 4-11-4 1-10h10" />);
+  }
+  if (n.includes("bootstrap")) {
+    return svg(<path d="M12 8h24v32H12zM18 18h8a4 4 0 0 1 0 8h-8V18Zm0 0v-4h9a4 4 0 0 1 0 8" />);
+  }
+  if (n.includes("mysql")) {
+    return svg(<path d="M10 30c7-18 21-18 28 0" />);
+  }
+  if (n.includes("postgres")) {
+    return svg(<path d="M12 30c2-10 24-10 24 0M18 26v10m12-10v10" />);
+  }
+  if (n.includes("oracle")) {
+    return svg(<path d="M10 26h28M16 18h16" />);
+  }
+  if (n.includes("sqlite")) {
+    return svg(<path d="M12 10h20l4 4v24H12V10Z" />);
+  }
+  if (n.includes("firebase")) {
+    return svg(<path d="M12 36l8-22 6 10 6-14 4 26-24 0Z" />);
+  }
+  if (n.includes("flutter")) {
+    return svg(<path d="M12 28l16-16 6 6-16 16m-6 6 10-10" />);
+  }
+  if (n.includes("dart")) {
+    return svg(<path d="M12 22l10-10 14 6v18l-10 10-14-6V22Z" />);
+  }
+  if (n.includes("c++")) {
+    return svg(<path d="M24 6l14 8v20l-14 8-14-8V14l14-8Zm0 14v8m-4-4h8" />);
+  }
+  if (n.includes("php")) {
+    return svg(<path d="M10 24h10v10H18V28m4-4h6a6 6 0 1 1 0 12h-2v-8" />);
+  }
+  if (n === "r") {
+    return svg(<path d="M10 28c0-8 12-12 22-10 10 2 8 8 2 10-4 1-8 4-8 6m0-6h8" />);
+  }
+  if (n.includes("matlab")) {
+    return svg(<path d="M8 34l8-16 8 12 8-6 8 10H8Z" />);
+  }
+  if (n.includes("jira")) {
+    return svg(<path d="M12 24l12-12 12 12-12 12-12-12Z" />);
+  }
+
+  // fallback generic
+  return svg(<path d="M10 10h28v28H10z" />);
+};
+
+
   // projects
   const projects = [
     {
-      title: "SP Course Assignment Tracking System",
-      desc: "Web app to track assignments & student progress.",
-      tech: ["Java", "Spring", "MySQL"],
-      image: "/projects/sp.png",
-      link: "https://github.com/Azzkaa/SP-Course-Assignment-Tracking-System",
+      title: "Email AI Auto-Reply",
+      desc: "AI-powered Gmail auto-responder with Telegram approval workflow.",
+      tech: ["n8n", "Gmail", "OpenAI","Telegram"],
+      image: "/n8n.png",
+      link: "https://github.com/Azzkaa/email-ai-auto-reply-n8n",
     },
+
     {
       title: "Student Portal (SKSU)",
       desc: "Portal features for students: auth, workflows, data.",
@@ -160,6 +286,29 @@ export default function Home() {
       image: "/SKSU.png",
       link: "https://github.com/Azzkaa/Application-Development-SKSU-Student-Portal",
     },
+    {
+      title: "Fault Detection for Substations",
+      desc: "Classifies RMU/VCB thermal images, segments with SAM, and flags hotspots (ΔT).",
+      tech: ["Python", "TensorFlow", "OpenCV","PyTorch","SAM","MobileNetV2"],
+      image: "/fyp22.png",
+      link: "https://github.com/Azzkaa/FYP2",
+    },
+    {
+      title: "Penguin Clustering & Analysis",
+      desc: "Unsupervised clustering + EDA.",
+      tech: ["Python", "ML"],
+      image: "/projects/penguins.png",
+      link: "https://github.com/Azzkaa/Penguin-Species-Clustering-and-Analysis-System",
+    },
+
+    {
+      title: "SP Course Assignment Tracking System",
+      desc: "Web app to track assignments & student progress.",
+      tech: ["Java", "Spring", "MySQL"],
+      image: "/projects/sp.png",
+      link: "https://github.com/Azzkaa/SP-Course-Assignment-Tracking-System",
+    },
+    
     {
       title: "Vue Task Manager",
       desc: "Lightweight task manager with reusable components.",
@@ -181,13 +330,7 @@ export default function Home() {
       image: "/projects/hands.png",
       link: "https://github.com/Azzkaa/Handwritten-Digit-Recognition-System",
     },
-    {
-      title: "Penguin Clustering & Analysis",
-      desc: "Unsupervised clustering + EDA.",
-      tech: ["Python", "ML"],
-      image: "/projects/penguins.png",
-      link: "https://github.com/Azzkaa/Penguin-Species-Clustering-and-Analysis-System",
-    },
+    
   ];
 
   const experience = [
@@ -208,7 +351,7 @@ export default function Home() {
       company: "Universiti Teknologi Malaysia (UTM)",
       role: "Student Research Assistant",
       period: "Feb 2025 — Jul 2025",
-      location: "Johor, MY",
+      location: "Kuala Lampur, MY",
       color: "rose",
       bullets: [
         "Researched thermal data analysis for fault detection.",
@@ -418,7 +561,7 @@ export default function Home() {
     hover:!text-[var(--brand)]           /* ← keep your teal text on hover */
   "
 >
-  View Projects
+  Projects
 </a>
 
               <a
@@ -432,7 +575,7 @@ export default function Home() {
                 target="_blank"
                 className="px-5 py-3 rounded-2xl border border-[color:var(--brand-600)] text-[var(--text)]"
               >
-                Download Resume
+                Resume
               </a>
             </motion.div>
 
@@ -623,161 +766,245 @@ export default function Home() {
 </section>
 
 
-      {/* PROJECTS */}
-      <section id="projects" className="py-20">
-        <div className="mx-auto max-w-6xl px-4">
-          <motion.h2
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 0.5 }}
-            className="text-3xl font-bold text-center"
+{/* WORK — Projects + Skills */}
+<section id="projects" className="py-20">
+  <div className="mx-auto max-w-6xl px-4">
+    <motion.h2
+      initial={{ opacity: 0, y: 10 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.4 }}
+      transition={{ duration: 0.5 }}
+      className="text-3xl font-bold text-center"
+    >
+      Work
+    </motion.h2>
+
+    <motion.p
+      initial={{ opacity: 0, y: 10 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.4 }}
+      transition={{ duration: 0.5, delay: 0.05 }}
+      className="mt-2 text-center text-sm text-[var(--muted)]"
+    >
+      A few things I&apos;ve built — functional, neat, and user-friendly.
+    </motion.p>
+
+    {/* Tabs (underline highlight, not pills) */}
+    <div className="mt-6 flex items-center justify-center gap-10 text-[15px]">
+      {(["projects", "skills"] as const).map((t) => {
+        const active = workTab === t;
+        return (
+          <button
+            key={t}
+            onClick={() => setWorkTab(t)}
+            className={
+              "relative pb-1 px-1 transition-colors " +
+              (active
+                ? "text-[var(--brand)]"
+                : "text-[var(--text)]/70 hover:text-[var(--brand)]/90")
+            }
           >
-            Projects
-          </motion.h2>
+            {t[0].toUpperCase() + t.slice(1)}
+            <span
+              className={
+                "absolute -bottom-1 left-1/2 h-[2px] w-0 -translate-x-1/2 bg-[var(--brand)] transition-all duration-300 " +
+                (active ? "w-14" : "w-0")
+              }
+            />
+          </button>
+        );
+      })}
+    </div>
 
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 0.5, delay: 0.05 }}
-            className="mt-2 text-center text-sm text-[var(--muted)]"
-          >
-            A few things I&apos;ve built — functional, neat, and user-friendly.
-          </motion.p>
+    {/* Projects grid */}
+    {workTab === "projects" && (
+      <>
+        <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {(showAllProjects ? projects : projects.slice(0, 6)).map((p, i) => (
+            <motion.article
+              key={p.title}
+              initial={{ opacity: 0, y: 22 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.25 }}
+              transition={{ duration: 0.5, delay: i * 0.06 }}
+              className="group rounded-2xl border border-[color:#1f2937] bg-[var(--panel)] hover:bg-[color:rgba(255,255,255,0.03)] shadow-md hover:shadow-xl transition"
+            >
+              {/* image */}
+              <div className="relative overflow-hidden rounded-t-2xl">
+                <Image
+                  src={p.image}
+                  alt={p.title}
+                  width={640}
+                  height={400}
+                  className="w-full aspect-[16/10] object-cover group-hover:scale-[1.02] transition"
+                />
+              </div>
 
-          <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {projects.map((p, i) => (
-              <motion.article
-                key={p.title}
-                initial={{ opacity: 0, y: 22 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.25 }}
-                transition={{ duration: 0.5, delay: i * 0.06 }}
-                className="group rounded-2xl border border-[color:#1f2937] bg-[var(--panel)] hover:bg-[color:rgba(255,255,255,0.03)] shadow-md hover:shadow-xl transition"
-              >
-                {/* image */}
-                <div className="relative overflow-hidden rounded-t-2xl">
-                  <Image
-                    src={p.image}
-                    alt={p.title}
-                    width={640}
-                    height={400}
-                    className="w-full aspect-[16/10] object-cover group-hover:scale-[1.02] transition"
-                  />
-                </div>
+              {/* body */}
+              <div className="p-5">
+                <h3 className="font-semibold">{p.title}</h3>
+                <p className="text-sm mt-2 opacity-80 text-[var(--muted)]">{p.desc}</p>
 
-                {/* body */}
-                <div className="p-5">
-                  <h3 className="font-semibold">{p.title}</h3>
-                  <p className="text-sm mt-2 opacity-80 text-[var(--muted)]">
-                    {p.desc}
-                  </p>
-
-                  {/* tech chips */}
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {p.tech.map((t) => (
-                      <span
-                        key={t}
-                        className="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium
-                                   border border-[color:var(--brand-600)] text-[var(--brand-600)]"
-                      >
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-
-                  {/* actions */}
-                  <div className="mt-5">
-                    <a
-                      href={p.link}
-                      target="_blank"
-                      className="inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm
-                                 bg-[var(--brand)] text-black border-transparent
-    transition-colors
-    hover:bg-[var(--btn-filled-hover)]
-    hover:!text-[var(--brand)]"
+                {/* tech tags (square, not rounded pills) */}
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {p.tech.map((t: string) => (
+                    <span
+                      key={t}
+                      className="inline-flex items-center px-2 py-1 text-xs font-medium
+                                 rounded-[6px] border border-[color:var(--brand-600)]/60
+                                 text-[var(--brand-600)] bg-[color:rgba(34,211,238,0.06)]"
                     >
-                      View Project
-                    </a>
-                  </div>
+                      {t}
+                    </span>
+                  ))}
                 </div>
-              </motion.article>
-            ))}
-          </div>
+
+                {/* actions */}
+                <div className="mt-5">
+                  <a
+                    href={p.link}
+                    target="_blank"
+                    className="inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm
+                               bg-[var(--brand)] text-black border-transparent transition-colors
+                               hover:bg-[var(--btn-filled-hover)] hover:!text-[var(--brand)]"
+                  >
+                    View Project
+                  </a>
+                </div>
+              </div>
+            </motion.article>
+          ))}
         </div>
-      </section>
+
+        {/* Show more / less */}
+        {projects.length > 6 && (
+          <div className="mt-8 text-center">
+            <button
+              onClick={() => setShowAllProjects((s) => !s)}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg
+                         border border-[color:var(--brand-600)]/40 text-[var(--text)]/80
+                         hover:text-[var(--brand)] hover:border-[color:var(--brand)]
+                         transition-colors"
+            >
+              {showAllProjects ? "Show less" : `Show ${projects.length - 6} more`}
+            </button>
+          </div>
+        )}
+      </>
+    )}
+
+    {/* Skills grid */}
+    {workTab === "skills" && (
+      <div className="mt-10 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {skills.map((s, i) => (
+          <motion.div
+            key={s}
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.45, delay: i * 0.04 }}
+            whileHover={{ scale: 1.06 }}
+            className="flex flex-col items-center justify-center h-40 rounded-2xl
+                       border border-[color:#1f2937] bg-[var(--panel)]
+                       shadow-sm hover:shadow-xl transition"
+          >
+            <div
+              className="text-[var(--brand)]"
+              style={{ filter: "drop-shadow(0 0 6px color-mix(in oklab, var(--brand) 45%, transparent))" }}
+            >
+              <SkillIcon name={s} />
+            </div>
+            <div className="mt-3 text-sm text-[var(--text)]/90">{s}</div>
+          </motion.div>
+        ))}
+      </div>
+    )}
+  </div>
+</section>
+
 
       {/* EXPERIENCE — vertical timeline */}
-      <section id="experience" className="py-20">
-        <div className="mx-auto max-w-6xl px-4">
-          <motion.h2
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 0.5 }}
-            className="text-3xl font-bold mb-8"
-          >
-            Experience
-          </motion.h2>
+<section id="experience" className="py-20">
+  <div className="mx-auto max-w-6xl px-4">
+    <motion.h2
+      initial={{ opacity: 0, y: 10 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.4 }}
+      transition={{ duration: 0.5 }}
+      className="text-3xl font-bold mb-8"
+    >
+      Experience
+    </motion.h2>
 
-          <div className="relative">
-            {/* vertical line */}
-            <div className="absolute left-4 top-0 h-full w-px bg-[color:#1f2937] md:left-5" />
+    <div className="relative">
+      {/* vertical line */}
+      <div className="absolute left-4 top-0 h-full w-px bg-[color:#1f2937] md:left-5" />
 
-            <ul className="space-y-8">
-              {experience.map((item, i) => {
-                const Icon = item.icon;
-                const c = colorClasses[item.color as "pink" | "rose"];
+      <ul className="space-y-8 overflow-visible">
+        {experience.map((item, i) => {
+          const Icon = item.icon;
+          const c = colorClasses[item.color as "pink" | "rose"];
 
-                return (
-                  <motion.li
-                    key={item.company + i}
-                    initial={{ opacity: 0, y: 18 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.4 }}
-                    transition={{ duration: 0.5, delay: i * 0.08 }}
-                    className="relative pl-14"
+          return (
+            <motion.li
+              key={item.company + i}
+              initial={{ opacity: 0, y: 18 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.4 }}
+              transition={{ duration: 0.5, delay: i * 0.08 }}
+              className="relative pl-14"
+            >
+              {/* marker */}
+              <span
+                className={`absolute left-3 top-2 h-3.5 w-3.5 rounded-full ${c.dot} ${c.ring} ring-4`}
+              />
+
+              {/* card (scales on hover) */}
+              <motion.div
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.995 }}
+                transition={{ type: "spring", stiffness: 360, damping: 26 }}
+                className="
+                  relative origin-left md:origin-center
+                  rounded-2xl border border-[color:#1f2937] bg-[var(--panel)] p-5
+                  transform-gpu will-change-transform
+                  hover:shadow-[0_22px_48px_-16px_rgba(0,0,0,0.45)]
+                  hover:border-[color:var(--brand-600)]/40
+                  hover:-translate-y-0.5
+                  z-0 hover:z-10
+                "
+              >
+                <div className="flex flex-wrap items-center gap-3">
+                  <span
+                    className={`inline-flex items-center gap-2 rounded-md px-2.5 py-1 text-xs font-medium ${c.badge}`}
                   >
-                    {/* marker */}
-                    <span
-                      className={`absolute left-3 top-2 h-3.5 w-3.5 rounded-full ${c.dot} ${c.ring} ring-4`}
-                    />
+                    <Icon size={14} />
+                    {item.role}
+                  </span>
+                  <span className="inline-flex items-center gap-1 text-xs text-[var(--muted)]">
+                    <CalendarDays size={14} /> {item.period}
+                  </span>
+                  <span className="inline-flex items-center gap-1 text-xs text-[var(--muted)]">
+                    <MapPin size={14} /> {item.location}
+                  </span>
+                </div>
 
-                    {/* card */}
-                    <div className="rounded-2xl border border-[color:#1f2937] bg-[var(--panel)] p-5">
-                      <div className="flex flex-wrap items-center gap-3">
-                        <span
-                          className={`inline-flex items-center gap-2 rounded-md px-2.5 py-1 text-xs font-medium ${c.badge}`}
-                        >
-                          <Icon size={14} />
-                          {item.role}
-                        </span>
-                        <span className="inline-flex items-center gap-1 text-xs text-[var(--muted)]">
-                          <CalendarDays size={14} /> {item.period}
-                        </span>
-                        <span className="inline-flex items-center gap-1 text-xs text-[var(--muted)]">
-                          <MapPin size={14} /> {item.location}
-                        </span>
-                      </div>
+                <h3 className="mt-3 text-lg font-semibold">{item.company}</h3>
 
-                      <h3 className="mt-3 text-lg font-semibold">
-                        {item.company}
-                      </h3>
+                <ul className="mt-3 space-y-2 text-sm text-[var(--muted)] list-disc pl-5">
+                  {item.bullets.map((b, j) => (
+                    <li key={j}>{b}</li>
+                  ))}
+                </ul>
+              </motion.div>
+            </motion.li>
+          );
+        })}
+      </ul>
+    </div>
+  </div>
+</section>
 
-                      <ul className="mt-3 space-y-2 text-sm text-[var(--muted)] list-disc pl-5">
-                        {item.bullets.map((b, j) => (
-                          <li key={j}>{b}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  </motion.li>
-                );
-              })}
-            </ul>
-          </div>
-        </div>
-      </section>
 
       {/* CONTACT — icons only */}
       <section id="contact" className="py-20">
